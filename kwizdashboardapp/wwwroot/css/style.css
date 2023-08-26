@@ -1,0 +1,101 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.dashboard {
+    display: flex;
+}
+
+.sidebar {
+    width: 20%;
+    height: 100vh;
+    background: #0D1117;
+    display: flex;
+}
+
+.sidebar-menu {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    fill: #7D8590;
+    margin-top: 36px;
+    margin-left: 14px;
+}
+
+.quizbtn {
+    width: 88px;
+    color: #E6EDF3;
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin: 40px 5px;
+    border: none;
+    background: none;
+    padding: 0;
+    font-family: 'Mona-Sans', sans-serif;
+}
+
+.profile {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    top: 93%;
+    margin-left: 14px;
+    align-items: center;
+}
+
+.username {
+    color: #7D8590;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin-left: 12px;
+    font-family: 'Mona-Sans', sans-serif;
+}
+
+.content {
+    width: 80%;
+    height: 100vh;
+    background: #040506;
+}
+
+.create-button {
+    width: 110px;
+    height: 32px;
+    flex-shrink: 0;
+    font-weight: 500;
+    background-color: #238636;
+    text-align: center;
+    stroke-width: 0.01px;
+    stroke: rgba(255, 255, 255, 0.50);
+    box-sizing: border-box;
+    border-radius: 8px;
+    margin-left: 960px;
+    margin-top: 31px;
+    font-family: 'Mona-Sans', sans-serif;
+}
+
+.create-button:hover {
+    cursor: pointer;
+    -ms-transform: scale(1.2);
+    /* IE 9 */
+    -webkit-transform: scale(1.2);
+    /* Safari 3-8 */
+    transform: scale(1.2);
+}
+
+.create-button p {
+    color: #FFF;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    padding-top: 10px;
+}
+
+.create-button a {
+    text-decoration: none;
+}
