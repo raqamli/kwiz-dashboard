@@ -14,14 +14,15 @@ builder.Services.AddTransient(sp =>
 
 builder.Services.AddOidcAuthentication(options =>
 {
-    options.ProviderOptions.MetadataUrl = "https://auth.xloyiha.tech/realms/xloyiha/.well-known/openid-configuration";
-    options.ProviderOptions.Authority = "https://auth.xloyiha.tech/realms/xloyiha";
-    options.ProviderOptions.ClientId = "dashboard";
-    options.ProviderOptions.ResponseType = "id_token token";
+    var keycloakSection = builder.Configuration.GetSection("Oidc:Keycloak");
+    options.ProviderOptions.MetadataUrl = keycloakSection.GetValue<string>("OidcConfigUrl");
+    options.ProviderOptions.Authority = keycloakSection.GetValue<string>("RealmUrl");
+    options.ProviderOptions.ClientId = keycloakSection.GetValue<string>("ClientId");
+    options.ProviderOptions.ResponseType = keycloakSection.GetValue<string>("ResponseType");
 
-    options.UserOptions.NameClaim = "preferred_username";
-    options.UserOptions.RoleClaim = "roles";
-    options.UserOptions.ScopeClaim = "scope";
+    options.UserOptions.NameClaim = keycloakSection.GetValue<string>("NameClaim");
+    options.UserOptions.RoleClaim = keycloakSection.GetValue<string>("RoleClaim");
+    options.UserOptions.ScopeClaim = keycloakSection.GetValue<string>("ScopeCliam");
 });
 
 await builder.Build().RunAsync();

@@ -9,53 +9,53 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = browser
 build_property.RootNamespace = kwiz-dashboard
 build_property.RootNamespace = kwiz-dashboard
-build_property.ProjectDir = c:\dev\kwiz\kwiz-dashboard\
+build_property.ProjectDir = C:\dev\kwiz\kwiz-dashboard\
 build_property.RazorLangVersion = 7.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = c:\dev\kwiz\kwiz-dashboard
+build_property.MSBuildProjectDirectory = C:\dev\kwiz\kwiz-dashboard
 build_property._RazorSourceGeneratorDebug = 
 
-[c:/dev/kwiz/kwiz-dashboard/App.razor]
+[C:/dev/kwiz/kwiz-dashboard/App.razor]
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/dev/kwiz/kwiz-dashboard/Components/Header/HeaderComponent.razor]
+[C:/dev/kwiz/kwiz-dashboard/Components/Header/HeaderComponent.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xIZWFkZXJcSGVhZGVyQ29tcG9uZW50LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/dev/kwiz/kwiz-dashboard/Components/Sidebar/BrandLogoComponent.razor]
+[C:/dev/kwiz/kwiz-dashboard/Components/Sidebar/BrandLogoComponent.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTaWRlYmFyXEJyYW5kTG9nb0NvbXBvbmVudC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/dev/kwiz/kwiz-dashboard/Components/Sidebar/NavigationComponent.razor]
+[C:/dev/kwiz/kwiz-dashboard/Components/Sidebar/NavigationComponent.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTaWRlYmFyXE5hdmlnYXRpb25Db21wb25lbnQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/dev/kwiz/kwiz-dashboard/Components/Sidebar/SidebarComponent.razor]
+[C:/dev/kwiz/kwiz-dashboard/Components/Sidebar/SidebarComponent.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTaWRlYmFyXFNpZGViYXJDb21wb25lbnQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/dev/kwiz/kwiz-dashboard/Pages/Authentication.razor]
+[C:/dev/kwiz/kwiz-dashboard/Pages/Authentication.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aGVudGljYXRpb24ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/dev/kwiz/kwiz-dashboard/Pages/Index.razor]
+[C:/dev/kwiz/kwiz-dashboard/Pages/Index.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/dev/kwiz/kwiz-dashboard/Shared/LoginDisplay.razor]
+[C:/dev/kwiz/kwiz-dashboard/Shared/LoginDisplay.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXExvZ2luRGlzcGxheS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/dev/kwiz/kwiz-dashboard/Shared/RedirectToLogin.razor]
+[C:/dev/kwiz/kwiz-dashboard/Shared/RedirectToLogin.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFJlZGlyZWN0VG9Mb2dpbi5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/dev/kwiz/kwiz-dashboard/_Imports.razor]
+[C:/dev/kwiz/kwiz-dashboard/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/dev/kwiz/kwiz-dashboard/Shared/MainLayout.razor]
+[C:/dev/kwiz/kwiz-dashboard/Shared/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-roihpjnvn8
