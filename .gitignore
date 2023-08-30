@@ -4,8 +4,6 @@
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
 appsettings.*.json
-obj/Debug/*.cs
-obj/Debug/*.cache
 
 # User-specific files
 *.rsuser
