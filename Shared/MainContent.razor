@@ -1,0 +1,17 @@
+@inherits LayoutComponentBase
+
+<div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+    data-sidebar-position="fixed" data-header-position="fixed">
+    <SidebarComponent />
+    <div class="body-wrapper">
+        <HeaderComponent />
+        @if (userInterestsSaved)
+        {
+            @Body
+        }
+        else
+        {
+            <h1>User interests not saved</h1>
+        }
+    </div>
+</div>

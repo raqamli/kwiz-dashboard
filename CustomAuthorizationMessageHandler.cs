@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
 public class CustomAuthorizationMessageHandler : AuthorizationMessageHandler
 {
-    public CustomAuthorizationMessageHandler(IAccessTokenProvider provider,
-        NavigationManager navigationManager)
+    public CustomAuthorizationMessageHandler(
+        IAccessTokenProvider provider,
+        NavigationManager navigationManager,
+        IConfiguration configuration)
         : base(provider, navigationManager)
     {
         ConfigureHandler(
-            authorizedUrls: new[] { "http://localhost:5204" });
+            authorizedUrls: new[] { configuration.GetValue<string>("KwizApi:BaseUrl") });
 
     }
 }

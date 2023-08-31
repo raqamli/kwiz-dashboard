@@ -7,10 +7,10 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
-builder.Services.AddHttpClient("ServerAPI", client => client.BaseAddress = new Uri("http://localhost:5204"))
+builder.Services.AddHttpClient("KwizAPI", client => client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("KwizApi:BaseUrl")))
     .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
 builder.Services.AddTransient(sp => 
-   sp.GetRequiredService<IHttpClientFactory>().CreateClient("ServerAPI"));
+   sp.GetRequiredService<IHttpClientFactory>().CreateClient("KwizAPI"));
 
 builder.Services.AddOidcAuthentication(options =>
 {
