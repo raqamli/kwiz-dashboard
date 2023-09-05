@@ -3,68 +3,74 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http.Json;
-using System.Text.Json;
+using System.Text;
 using System.Threading.Tasks;
-using Kwiz;
+using Newtonsoft.Json;
 
 public class KwizApiHttpClient : IKwizApiHttpClient
 {
     private readonly HttpClient client;
-    private UserInterest[]? userInterest;
 
-    public KwizApiHttpClient(HttpClient client)
+    public KwizApiHttpClient(IHttpClientFactory httpClientFactory)
     {
-        this.client = client;
+        this.client = httpClientFactory.CreateClient("KwizApi");
     }
 
-    public async Task<UserInterest[]> GetUserInterestsAsync()
+    public async ValueTask<IEnumerable<UserInterest>> GetUserInterestsAsync()
     {
         var httpResponse = await client.GetAsync("api/v1/Userinfo/interests");
 
         httpResponse.EnsureSuccessStatusCode();
 
         var content = await httpResponse.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<UserInterest[]>(
-            content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        var userInterests = JsonConvert.DeserializeObject<IEnumerable<UserInterest>>(content);
+
+        return userInterests;
     }
 
+    public async ValueTask<IEnumerable<UserInterest>> GetUserInterestsOrDefaultAsync()
+    {
+        try
+        {
+            var userInterests = await GetUserInterestsAsync();
+            return userInterests;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"An error occurred while getting user interests: {ex.Message}");
+            return Enumerable.Empty<UserInterest>();
+        }
+    }
     public async Task<bool> IsUserInterestsSubmittedAsync()
     {
         try
         {
-            var httpResponce = await client.GetAsync("api/v1/Userinfo/interests");
-
-            if(httpResponce.IsSuccessStatusCode)
-            {
-                var content = await httpResponce.Content.ReadAsStringAsync();
-                bool isSubmitted = bool.Parse(content);
-
-                return isSubmitted;
-            }
-            else
-            {
-                return false;
-            }
+            var interests = await GetUserInterestsOrDefaultAsync();
+            return interests != null;
         }
-        catch (Exception ex)
+        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NoContent)
         {
             return false;
         }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to check if user interests are submitted.", ex);
+        }
     }
 
-    public async Task SubmitUserInterestAsync(UserInterest interests)
+    public async Task SubmitUserInterestsAsync(UserInterest interests)
     {
         try
         {
-            var httpResponce = await client.PostAsJsonAsync("api/v1/Userinfo/interests", interests);
-            if(httpResponce.IsSuccessStatusCode)
-                return;
-            else
-                throw new Exception("Not found");
+            var serializedInterests = JsonConvert.SerializeObject(interests);
+            var content = new StringContent(serializedInterests, Encoding.UTF8, "application/json");  
+
+            var response = await client.PostAsync("api/user/interests", content);
+            response.EnsureSuccessStatusCode();
         }
         catch (Exception ex)
         {
-            throw new Exception("exception");
+            throw new Exception("Failed to submit user interests.", ex);
         }
     }
 }

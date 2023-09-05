@@ -1,6 +1,7 @@
 public interface IKwizApiHttpClient
 {
-    Task<UserInterest[]> GetUserInterestsAsync();
+    ValueTask<IEnumerable<UserInterest>> GetUserInterestsAsync();
     Task<bool> IsUserInterestsSubmittedAsync();
-    Task SubmitUserInterestAsync(UserInterest interests);
+    Task SubmitUserInterestsAsync(UserInterest interests);
+    ValueTask<IEnumerable<UserInterest>> GetUserInterestsOrDefaultAsync();
 }
