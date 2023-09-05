@@ -6,7 +6,7 @@
 
 <AuthorizeView>
     <Authorized>
-        <a href="https://auth.xloyiha.tech/realms/xloyiha/account/#/personal-info">@context.User.Identity?.Name</a>
+        @* <a href="https://auth.xloyiha.tech/realms/xloyiha/account/#/personal-info">@context.User.Identity?.Name</a> *@
         <button class="nav-link btn btn-link" @onclick="BeginSignOut">Log out</button>
     </Authorized>
     <NotAuthorized>
@@ -18,6 +18,6 @@
     private void BeginSignOut(MouseEventArgs args)
     {
         @* await SignOutManager.SetSignOutState(); *@
-        Navigation.NavigateToLogout("authentication/logout");
+        Navigation.NavigateToLogout("https://auth.xloyiha.tech/admin/xloyiha/console");
     }
 }
