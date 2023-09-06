@@ -1,16 +1,15 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Kwiz.Dashboard;
+using Kwiz.Dashboard;                                                                                    
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
-builder.Services.AddHttpClient("ServerAPI", client => client.BaseAddress = new Uri("http://localhost:5204"))
+builder.Services.AddHttpClient<IKwizApiHttpClient, KwizApiHttpClient>(client => 
+    client.BaseAddress = new Uri(builder.Configuration["KwizApiBaseUrl"]))
     .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
-builder.Services.AddTransient(sp => 
-   sp.GetRequiredService<IHttpClientFactory>().CreateClient("ServerAPI"));
 
 builder.Services.AddOidcAuthentication(options =>
 {
