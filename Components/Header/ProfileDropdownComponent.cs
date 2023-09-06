@@ -9,7 +9,7 @@ public partial class ProfileDropdownComponent : ComponentBase
 {
     private AuthenticationState authState;
     private string ProfileUrl() 
-        => $"{Configuration.GetValue<string>("Oidc:Keycloak:RealmUrl")}/account/#/personal-profile";
+        => $"{Configuration.GetValue<string>("Oidc:Keycloak:RealmUrl")}/account/#/personal-info";
     [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; }
     [Inject] private IConfiguration Configuration { get; set; }
     [Inject] private NavigationManager Navigation { get; set; }
@@ -21,6 +21,6 @@ public partial class ProfileDropdownComponent : ComponentBase
 
     private void BeginSignOut(MouseEventArgs args)
     {
-        Navigation.NavigateToLogout("https://auth.xloyiha.tech/realms/xloyiha/protocol/openid-connect/logout");
+        Navigation.NavigateToLogout(Configuration.GetValue<string>("Oidc:Keycloak:LogoutUrl"));
     }
 }
