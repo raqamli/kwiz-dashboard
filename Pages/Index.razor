@@ -1,5 +1,5 @@
 @page "/"
-
+@inherits LayoutComponentBase
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize]
 
@@ -26,10 +26,18 @@ This application demonstrates how to integrate with Keycloak from BlazorWASM app
     </ul>
 }
 
+
 @code {
     private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
-
-    protected override Task OnInitializedAsync() => GetClaimsPrincipalData();
+    private IEnumerable<UserInterest> Interests { get; set; }
+    
+    [Inject]
+    public IKwizApiHttpClient KwizApiHttpClient { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        await GetClaimsPrincipalData();
+        Interests = (await KwizApiHttpClient.GetUserInterestsAsync()).ToList();
+    }
 
     private async Task GetClaimsPrincipalData()
     {

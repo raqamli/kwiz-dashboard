@@ -1,48 +1,95 @@
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-            aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="card modal-dialog modal-lg">
-        <div class="card-body">
-            <h2 class="fw-semibold">Nimalarga qiziqasiz?</h2>
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <p class="fw-semibold mb-2 mt-4 lead fw-semibold">Dasturlash tillari</p>
+@if (Visible)
+{
+    <div class="modal fade show" style="display: block;">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Choose Interests</h5>
+                    <button type="button" class="close" @onclick="CloseModal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Select your programming interests:</p>
+
+                    <!-- Programming Languages -->
+                    <p class="fw-semibold mb-2 mt-4 lead fw-semibold">Programming Languages</p>
                     <div class="col">
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">C#</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Java</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">JavaScript</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Python</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">PHP</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Ruby</span>
+                        @foreach (var language in programmingLanguages)
+                        {
+                            <button class="btn btn-secondary m-1"
+                                    @onclick="() => ToggleSelection(language)"
+                                    style="cursor: pointer; background-color: @(IsSelected(language) ? "green" : "")">
+                                @language
+                            </button>
+                        }
                     </div>
 
-                    <p class="fw-semibold mb-2 mt-4 lead fw-semibold">Frameworklar</p>
+                    <!-- Frameworks -->
+                    <p class="fw-semibold mb-2 mt-4 lead fw-semibold">Frameworks</p>
                     <div class="col">
-                        <span class="badge rounded-pill bg-success p-2 m-1">ASP.NET</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Spring Boot</span>
-                        <span class="badge rounded-pill bg-success p-2 m-1">React</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Django</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Laravel</span>
-                        <span class="badge rounded-pill bg-success p-2 m-1">Ruby on Rails</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Angular</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Vue.js</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Express.js</span>
-                        <span class="badge rounded-pill bg-success p-2 m-1">Flask</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Symfony</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">ASP.NET Core</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Play Framework</span>
-                        <span class="badge rounded-pill bg-success p-2 m-1">Ember.js</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">RubyMotion</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Meteor</span>
-                        <span class="badge rounded-pill bg-success p-2 m-1">CakePHP</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Sinatra</span>
-                        <span class="badge rounded-pill bg-success p-2 m-1">Sails.js</span>
+                        @foreach (var framework in frameworks)
+                        {
+                            <button class="btn btn-secondary m-1"
+                                    @onclick="() => ToggleSelection(framework)"
+                                    style="cursor: pointer; background-color: @(IsSelected(framework) ? "green" : "")">
+                                @framework
+                            </button>
+                        }
                     </div>
                 </div>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Hammasi tayyor</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @onclick="SaveInterests">Save</button>
+                    <button type="button" class="btn btn-secondary" @onclick="CloseModal">Close</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+}
+
+@code {
+    [Parameter] public bool Visible { get; set; } = false;
+    [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
+
+    private List<string> selectedLanguages = new List<string>();
+    private List<string> selectedFrameworks = new List<string>();
+    private List<string> programmingLanguages = new List<string> { "C#", "Java", "JavaScript", "Python", "PHP", "Ruby" };
+    private List<string> frameworks = new List<string> { "ASP.NET", "Spring Boot", "React", "Django", "Laravel", "Ruby on Rails", "Angular", "Vue.js", "Express.js", "Flask", "Symfony", "ASP.NET Core", "Play Framework", "Ember.js", "RubyMotion", "Meteor", "CakePHP", "Sinatra", "Sails.js" };
+
+    private void CloseModal()
+    {
+        Visible = false;
+        VisibleChanged.InvokeAsync(Visible);
+    }
+
+    private bool IsSelected(string interest)
+    {
+        return selectedLanguages.Contains(interest) || selectedFrameworks.Contains(interest);
+    }
+
+    private void ToggleSelection(string interest)
+    {
+        if (selectedLanguages.Contains(interest) || selectedFrameworks.Contains(interest))
+        {
+            selectedLanguages.Remove(interest);
+            selectedFrameworks.Remove(interest);
+        }
+        else
+        {
+            // Determine whether the interest is a language or framework and add it accordingly.
+            if (programmingLanguages.Contains(interest))
+            {
+                selectedLanguages.Add(interest);
+            }
+            else if (frameworks.Contains(interest))
+            {
+                selectedFrameworks.Add(interest);
+            }
+        }
+    }
+
+    private void SaveInterests()
+    {
+        CloseModal();
+    }
+}
