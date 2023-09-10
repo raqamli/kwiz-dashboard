@@ -44,13 +44,13 @@ else
         StateHasChanged();
     }
 
-    private IEnumerable<UserInterest> Interests { get; set; }
+    private UserInterests Interests { get; set; } = default;
     [Inject] IKwizApiHttpClient KwizApiHttpClient { get; set; }
     
     protected override async Task OnInitializedAsync()
     {
         await GetClaimsPrincipalData();
-        Interests = (await KwizApiHttpClient.GetUserInterestsAsync()).ToList();
+        Interests = await KwizApiHttpClient.GetUserInterestsAsync();
     }
 
     private async Task GetClaimsPrincipalData()

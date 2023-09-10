@@ -1,3 +1,5 @@
+@using System.Text.Json;
+
 @if (Visible)
 {
     <div class="modal fade show" style="display: block;">
@@ -10,36 +12,30 @@
                     </button>
                 </div>
                 <div class="modal-body">
+
                     <p>Select your programming interests:</p>
 
-                    <!-- Programming Languages -->
-                    <p class="fw-semibold mb-2 mt-4 lead fw-semibold">Programming Languages</p>
-                    <div class="col">
-                        @foreach (var language in programmingLanguages)
+                    @{
+                        var categories = Technologies.GroupBy(t => t.Type);
+                        foreach(var category in categories)
                         {
-                            <button class="btn btn-secondary m-1"
-                                    @onclick="() => ToggleSelection(language)"
-                                    style="cursor: pointer; background-color: @(IsSelected(language) ? "green" : "")">
-                                @language
-                            </button>
+                            <p class="fw-semibold mb-2 mt-4 lead fw-semibold">@category.Key</p>
+                            
+                            <div class="col">
+                                @foreach(var item in category)
+                                {
+                                    <button class="btn btn-secondary m-1"
+                                            @onclick="() => ToggleSelection(item)"
+                                            style="cursor: pointer; background-color: @(SelectedTechnologies.Contains(item) ? "green" : "")">
+                                        @item.Name
+                                    </button>
+                                }
+                            </div>
                         }
-                    </div>
-
-                    <!-- Frameworks -->
-                    <p class="fw-semibold mb-2 mt-4 lead fw-semibold">Frameworks</p>
-                    <div class="col">
-                        @foreach (var framework in frameworks)
-                        {
-                            <button class="btn btn-secondary m-1"
-                                    @onclick="() => ToggleSelection(framework)"
-                                    style="cursor: pointer; background-color: @(IsSelected(framework) ? "green" : "")">
-                                @framework
-                            </button>
-                        }
-                    </div>
+                    }
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" @onclick="SaveInterests">Save</button>
+                    <button type="button" class="btn btn-primary @IsSaveDisabled" @onclick="(async () => await SaveInterestsAsync())">Save</button>
                     <button type="button" class="btn btn-secondary" @onclick="CloseModal">Close</button>
                 </div>
             </div>
@@ -52,20 +48,26 @@
     [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
     [Inject] IKwizApiHttpClient KwizApiHttpClient { get; set; }
 
-    private List<string> selectedLanguages = new List<string>();
-    private List<string> selectedFrameworks = new List<string>();
-    private List<string> programmingLanguages = new List<string> { "C#", "Java", "JavaScript", "Python", "PHP", "Ruby" };
-    private List<string> frameworks = new List<string> { "ASP.NET", "Spring Boot", "React", "Django", "Laravel", "Ruby on Rails", "Angular", "Vue.js", "Express.js", "Flask", "Symfony", "ASP.NET Core", "Play Framework", "Ember.js", "RubyMotion", "Meteor", "CakePHP", "Sinatra", "Sails.js" };
-    
-    private List<Technologies> Technologies { get; set; }
+    private IEnumerable<Technology> Technologies { get; set; } = Enumerable.Empty<Technology>();
+    private List<Technology> SelectedTechnologies { get; set; } = new List<Technology>();
+    private string IsSaveDisabled = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        Technologies = (await KwizApiHttpClient.GetTechnologiesAsync()).ToList();
-        @* foreach(var technology in Technologies)
-        {
-            frameworks.Add(technology.Name);
-        } *@
+        Technologies = await KwizApiHttpClient.GetTechnologiesAsync();
+    }
+
+    private void ToggleSelection(Technology tech)
+    {
+        if(SelectedTechnologies.Contains(tech))
+            SelectedTechnologies.Remove(tech);
+        else
+            SelectedTechnologies.Add(tech);
+
+        if(SelectedTechnologies.Any())
+            IsSaveDisabled = string.Empty;
+        else
+            IsSaveDisabled = "disabled";
     }
 
     private void CloseModal()
@@ -73,35 +75,11 @@
         Visible = false;
         VisibleChanged.InvokeAsync(Visible);
     }
-
-    private bool IsSelected(string interest)
+    private async ValueTask SaveInterestsAsync()
     {
-        return selectedLanguages.Contains(interest) || selectedFrameworks.Contains(interest);
-    }
-
-    private void ToggleSelection(string interest)
-    {
-        if (selectedLanguages.Contains(interest) || selectedFrameworks.Contains(interest))
-        {
-            selectedLanguages.Remove(interest);
-            selectedFrameworks.Remove(interest);
-        }
-        else
-        {
-            // Determine whether the interest is a language or framework and add it accordingly.
-            if (programmingLanguages.Contains(interest))
-            {
-                selectedLanguages.Add(interest);
-            }
-            else if (frameworks.Contains(interest))
-            {
-                selectedFrameworks.Add(interest);
-            }
-        }
-    }
-
-    private void SaveInterests()
-    {
+        IsSaveDisabled = "disabled";
+        await KwizApiHttpClient.SubmitUserInterestsAsync(SelectedTechnologies.Select(t => t.Id));
         CloseModal();
+        IsSaveDisabled = string.Empty;
     }
 }
