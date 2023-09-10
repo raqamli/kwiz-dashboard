@@ -8,8 +8,26 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
 builder.Services.AddHttpClient<IKwizApiHttpClient, KwizApiHttpClient>(client => 
-    client.BaseAddress = new Uri(builder.Configuration["KwizApiBaseUrl"]))
+    client.BaseAddress = new Uri(builder.Configuration.GetValue("KwizApiBaseUrl", string.Empty)))
     .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
+
+// builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://http://localhost:5115/") });
+
+// builder.Services.AddHttpClient<IKwizApiHttpClient, KwizApiHttpClient>(client => 
+//     client.BaseAddress = new Uri(builder.Configuration["KwizApiBaseUrl"]))
+//     .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
+
+
+// builder.Services.AddHttpClient("KwizAPI", client => client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("KwizApi:BaseUrl")))
+//     .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
+
+
+// builder.Services.AddScoped(x => {
+//     var apiUrl = new Uri("http://localhost:5115");
+//     return new HttpClient() {BaseAddress = apiUrl};
+// });
+
+// builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 builder.Services.AddOidcAuthentication(options =>
 {

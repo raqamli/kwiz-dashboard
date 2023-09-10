@@ -4,4 +4,5 @@ public interface IKwizApiHttpClient
     Task<bool> IsUserInterestsSubmittedAsync();
     Task SubmitUserInterestsAsync(UserInterest interests);
     ValueTask<IEnumerable<UserInterest>> GetUserInterestsOrDefaultAsync();
+    ValueTask<IEnumerable<Technologies>> GetTechnologiesAsync();
 }

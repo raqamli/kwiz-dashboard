@@ -7,23 +7,23 @@
         <HeaderComponent />
         @Body 
         @* <ModalComponent Visible="@modalVisible" VisibleChanged="HandleModalVisibility" /> *@
-        @if(Interests is not null)
+        @* @if(Interests is not null)
         {
             <ModalComponent Visible="@modalVisible" VisibleChanged="HandleModalVisibility" />
         }
         else
         {
             <h1>Checking</h1>
-        }
+        } *@
 
     </div>
 </div>
 
-@code {
+@* @code {
     private bool modalVisible = true; // Set to true to automatically show the modal
     private void HandleModalVisibility(bool isVisible)
     {
         modalVisible = isVisible;
         StateHasChanged();
     }
-}
+} *@

@@ -8,7 +8,7 @@ public class CustomAuthorizationMessageHandler : AuthorizationMessageHandler
         : base(provider, navigationManager)
     {
         ConfigureHandler(
-            authorizedUrls: new[] { "http://localhost:5204" });
+            authorizedUrls: new[] { "http://localhost:5115" });
 
     }
 }

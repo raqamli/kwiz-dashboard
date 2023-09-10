@@ -50,11 +50,23 @@
 @code {
     [Parameter] public bool Visible { get; set; } = false;
     [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
+    [Inject] IKwizApiHttpClient KwizApiHttpClient { get; set; }
 
     private List<string> selectedLanguages = new List<string>();
     private List<string> selectedFrameworks = new List<string>();
     private List<string> programmingLanguages = new List<string> { "C#", "Java", "JavaScript", "Python", "PHP", "Ruby" };
     private List<string> frameworks = new List<string> { "ASP.NET", "Spring Boot", "React", "Django", "Laravel", "Ruby on Rails", "Angular", "Vue.js", "Express.js", "Flask", "Symfony", "ASP.NET Core", "Play Framework", "Ember.js", "RubyMotion", "Meteor", "CakePHP", "Sinatra", "Sails.js" };
+    
+    private List<Technologies> Technologies { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Technologies = (await KwizApiHttpClient.GetTechnologiesAsync()).ToList();
+        @* foreach(var technology in Technologies)
+        {
+            frameworks.Add(technology.Name);
+        } *@
+    }
 
     private void CloseModal()
     {

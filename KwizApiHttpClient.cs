@@ -11,9 +11,28 @@ public class KwizApiHttpClient : IKwizApiHttpClient
 {
     private readonly HttpClient client;
 
-    public KwizApiHttpClient(IHttpClientFactory httpClientFactory)
+    public KwizApiHttpClient(HttpClient client)
     {
-        this.client = httpClientFactory.CreateClient("KwizApi");
+        this.client = client;
+    }
+
+    // private readonly HttpClient client;
+
+    // public KwizApiHttpClient(IHttpClientFactory httpClientFactory)
+    // {
+    //     this.client = httpClientFactory.CreateClient("KwizApiBaseUrl");
+    // }
+
+    public async ValueTask<IEnumerable<Technologies>> GetTechnologiesAsync()
+    {
+        var httpResponse = await client.GetAsync("api/v1/Userinfo/technologies");
+
+        httpResponse.EnsureSuccessStatusCode();
+
+        var content = await httpResponse.Content.ReadAsStringAsync();
+        var technologies = JsonConvert.DeserializeObject<IEnumerable<Technologies>>(content);
+
+        return technologies;
     }
 
     public async ValueTask<IEnumerable<UserInterest>> GetUserInterestsAsync()
@@ -73,4 +92,6 @@ public class KwizApiHttpClient : IKwizApiHttpClient
             throw new Exception("Failed to submit user interests.", ex);
         }
     }
+
+    
 }
