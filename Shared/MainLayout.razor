@@ -1,11 +1,29 @@
 ﻿@inherits LayoutComponentBase
-
+@namespace Kwiz.Dashboard.Shared
 <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
     data-sidebar-position="fixed" data-header-position="fixed">
-
-    <SidebarComponent/>
+    <SidebarComponent />
     <div class="body-wrapper">
-        <HeaderComponent/>
-        @Body
+        <HeaderComponent />
+        @Body 
+        @* <ModalComponent Visible="@modalVisible" VisibleChanged="HandleModalVisibility" /> *@
+        @* @if(Interests is not null)
+        {
+            <ModalComponent Visible="@modalVisible" VisibleChanged="HandleModalVisibility" />
+        }
+        else
+        {
+            <h1>Checking</h1>
+        } *@
+
     </div>
 </div>
+
+@* @code {
+    private bool modalVisible = true; // Set to true to automatically show the modal
+    private void HandleModalVisibility(bool isVisible)
+    {
+        modalVisible = isVisible;
+        StateHasChanged();
+    }
+} *@

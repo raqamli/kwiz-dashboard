@@ -1,5 +1,5 @@
 @page "/"
-
+@inherits LayoutComponentBase
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize]
 
@@ -26,10 +26,32 @@ This application demonstrates how to integrate with Keycloak from BlazorWASM app
     </ul>
 }
 
+@if(Interests is null)
+{
+    <ModalComponent Visible="@modalVisible" VisibleChanged="HandleModalVisibility" />
+}
+else
+{
+    <h1>CHecking...</h1>
+}
+
 @code {
     private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
+    private bool modalVisible = true; // Set to true to automatically show the modal
+    private void HandleModalVisibility(bool isVisible)
+    {
+        modalVisible = isVisible;
+        StateHasChanged();
+    }
 
-    protected override Task OnInitializedAsync() => GetClaimsPrincipalData();
+    private UserInterests Interests { get; set; } = default;
+    [Inject] IKwizApiHttpClient KwizApiHttpClient { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await GetClaimsPrincipalData();
+        Interests = await KwizApiHttpClient.GetUserInterestsAsync();
+    }
 
     private async Task GetClaimsPrincipalData()
     {

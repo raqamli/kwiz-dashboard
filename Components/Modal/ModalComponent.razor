@@ -1,0 +1,85 @@
+@using System.Text.Json;
+
+@if (Visible)
+{
+    <div class="modal fade show" style="display: block;">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Choose Interests</h5>
+                    <button type="button" class="close" @onclick="CloseModal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <p>Select your programming interests:</p>
+
+                    @{
+                        var categories = Technologies.GroupBy(t => t.Type);
+                        foreach(var category in categories)
+                        {
+                            <p class="fw-semibold mb-2 mt-4 lead fw-semibold">@category.Key</p>
+                            
+                            <div class="col">
+                                @foreach(var item in category)
+                                {
+                                    <button class="btn btn-secondary m-1"
+                                            @onclick="() => ToggleSelection(item)"
+                                            style="cursor: pointer; background-color: @(SelectedTechnologies.Contains(item) ? "green" : "")">
+                                        @item.Name
+                                    </button>
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary @IsSaveDisabled" @onclick="(async () => await SaveInterestsAsync())">Save</button>
+                    <button type="button" class="btn btn-secondary" @onclick="CloseModal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool Visible { get; set; } = false;
+    [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
+    [Inject] IKwizApiHttpClient KwizApiHttpClient { get; set; }
+
+    private IEnumerable<Technology> Technologies { get; set; } = Enumerable.Empty<Technology>();
+    private List<Technology> SelectedTechnologies { get; set; } = new List<Technology>();
+    private string IsSaveDisabled = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Technologies = await KwizApiHttpClient.GetTechnologiesAsync();
+    }
+
+    private void ToggleSelection(Technology tech)
+    {
+        if(SelectedTechnologies.Contains(tech))
+            SelectedTechnologies.Remove(tech);
+        else
+            SelectedTechnologies.Add(tech);
+
+        if(SelectedTechnologies.Any())
+            IsSaveDisabled = string.Empty;
+        else
+            IsSaveDisabled = "disabled";
+    }
+
+    private void CloseModal()
+    {
+        Visible = false;
+        VisibleChanged.InvokeAsync(Visible);
+    }
+    private async ValueTask SaveInterestsAsync()
+    {
+        IsSaveDisabled = "disabled";
+        await KwizApiHttpClient.SubmitUserInterestsAsync(SelectedTechnologies.Select(t => t.Id));
+        CloseModal();
+        IsSaveDisabled = string.Empty;
+    }
+}

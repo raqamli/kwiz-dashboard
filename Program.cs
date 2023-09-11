@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Kwiz.Dashboard;                                                                                    
+using Kwiz.Dashboard;
+using Kwiz.Dashboard.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -8,7 +9,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
 builder.Services.AddHttpClient<IKwizApiHttpClient, KwizApiHttpClient>(client => 
-    client.BaseAddress = new Uri(builder.Configuration["KwizApiBaseUrl"]))
+    client.BaseAddress = new Uri(builder.Configuration.GetValue("KwizApi:BaseUrl", string.Empty)))
     .AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
 
 builder.Services.AddOidcAuthentication(options =>
