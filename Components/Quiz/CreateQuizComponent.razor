@@ -2,55 +2,69 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title fw-semibold mb-4">Forms</h5>
-                <div class="card">
-                    <div class="card-body">
-                        <form>
-                            <div class="mb-3">
-                                <label for="title" class="form-label">Title</label>
-                                <input type="title" class="form-control" id="title" aria-describedby="title">
-                            </div>
-                            <div class="mb-3">
-                                <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control" id="description" rows="3"></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label for="date" class="form-label">OpeningDateTime</label>
-                                <input type="date" class="form-control" id="openingDateTime">
-                            </div>
-                            <div class="mb-3">
-                                <label for="date" class="form-label">ClosingDateTime</label>
-                                <input type="date" class="form-control" id="closingDateTime">
-                            </div>
-                            <div class="mb-3">
-                                <label for="disabledSelect" class="form-label">IsPublic</label>
-                                <select id="disabledSelect" class="form-select">
-                                    <option>True</option>
-                                    <option>False</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                @{
-                                    <button type="submit" class="btn btn-primary" @onclick="ShowTagsComponent">Tags</button>
-                                }
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="float: right;">Submit</button>
-                        </form>
+                <form Model="@createQuiz2" method="post">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input @bind-value="createQuiz.Title" type="title" class="form-control" id="title" aria-describedby="title">
                     </div>
-                </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea @bind="createQuiz.Description" class="form-control" id="description" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="date" class="form-label">OpeningDateTime</label>
+                        <input @bind-value="createQuiz.OpeningDateTime" type="date" class="form-control" id="openingDateTime">
+                    </div>
+                    <div class="mb-3">
+                        <label for="date" class="form-label">ClosingDateTime</label>
+                        <input @bind-value="createQuiz.ClosingDateTime" type="date" class="form-control" id="closingDateTime">
+                    </div>
+                    <div class="mb-3">
+                        <label for="disabledSelect" class="form-label">IsPublic</label>
+                        <select @bind="createQuiz.IsPublic" id="disabledSelect" class="form-select">
+                            <option>True</option>
+                            <option>False</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="code" class="form-label">Code</label>
+                        <textarea @bind="createQuiz.Code" type="code" class="form-control" id="code"></textarea>
+                    </div>
+                    <button @onclick="(async () => await CreateQuizAsync())" type="submit" class="btn btn-primary" style="float: right;">Submit</button>
+                </form>
+                <button class="btn btn-primary" @onclick="OpenModal">Tags</button>
+                <TagsComponent Visible="@modalVisible" VisibleChanged="HandleModalVisibility" />
             </div>
         </div>
     </div>
 </div>
-
 @code {
-    [Parameter] public bool Visible { get; set; } = false;
-    [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
-    private void ShowTagsComponent()
+    [Inject] IKwizApiHttpClient KwizApiHttpClient { get; set; }
+    private bool modalVisible = false;
+    private void OpenModal()
     {
-        Visible = false;
-        VisibleChanged.InvokeAsync(Visible);
+        modalVisible = true;
     }
 
+    private void HandleModalVisibility(bool isVisible)
+    {
+        modalVisible = isVisible;
+        StateHasChanged();
+    }
+
+    CreateQuiz createQuiz = new();
+    CreateQuiz createQuiz2 = new();
+
+
+    private async Task CreateQuizAsync()
+    {
+        createQuiz2.Title = "Title";
+        createQuiz2.Description = "Title";
+        createQuiz2.OpeningDateTime = DateTime.UtcNow;
+        createQuiz2.ClosingDateTime = DateTime.UtcNow;
+        createQuiz2.IsPublic = true;
+        createQuiz2.Code = "code";
+        await KwizApiHttpClient.CreateQuizAsync(createQuiz2);
+    }
 
 }

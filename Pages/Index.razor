@@ -9,6 +9,8 @@
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
+@inject IModalService modal
+
 <PageTitle>Index</PageTitle>
 
 <h1>BlazorWASM Keycloak Authentication</h1>
@@ -32,7 +34,7 @@ This application demonstrates how to integrate with Keycloak from BlazorWASM app
 }
 else
 {
-   <CreateQuizComponent />
+   @* <CreateQuizComponent /> *@
 }
 
 @code {

@@ -9,4 +9,5 @@ public interface IKwizApiHttpClient
     Task SubmitUserInterestsAsync(IEnumerable<Guid> interestedTechnologyIds);
     ValueTask<UserInterests> GetUserInterestsOrDefaultAsync();
     ValueTask<IEnumerable<Technology>> GetTechnologiesAsync();
+    Task CreateQuizAsync(CreateQuiz quiz);
 }

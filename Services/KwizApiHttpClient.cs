@@ -69,4 +69,10 @@ public class KwizApiHttpClient : IKwizApiHttpClient
         var response = await client.PostAsJsonAsync("api/v1/Userinfo/interests", interestedTechnologyIds);
         response.EnsureSuccessStatusCode();
     }
+
+    public async Task CreateQuizAsync(CreateQuiz quiz)
+    {
+        var response = await client.PostAsJsonAsync("api/v1/Quizes", quiz);
+        response.EnsureSuccessStatusCode();
+    }
 }
