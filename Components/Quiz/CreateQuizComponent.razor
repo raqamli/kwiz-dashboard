@@ -26,6 +26,7 @@
                     <div class="mb-3">
                         <label class="form-label">IsPublic</label>
                         <select value.bind="@createQuiz.IsPublic" class="form-select">
+                            <option value="select">Select</option>
                             <option value="true">True</option>
                             <option value="false">False</option>
                         </select>
@@ -38,12 +39,14 @@
                         style="float: right;">Submit</button>
                 </form>
                 <button class="btn btn-primary" @onclick="OpenModal">Tags</button>
-                <TagsComponent Visible="@modalVisible" VisibleChanged="HandleModalVisibility" SelectedTechnologies="tagsCreated" />
+                <TagsComponent Visible="@modalVisible" VisibleChanged="HandleModalVisibility"
+                    SelectedTechnologies="tagsCreated" />
             </div>
         </div>
     </div>
 </div>
 @code {
+    [Inject] NavigationManager NavigationManager { get; set; }
     [Inject] IKwizApiHttpClient KwizApiHttpClient { get; set; }
 
     private bool modalVisible = false;
@@ -57,17 +60,17 @@
         modalVisible = isVisible;
         StateHasChanged();
     }
-    private string OpeningDateTime { get; set; } = DateTime.UtcNow.ToString("dd/MM/yyyy");
-    private string ClosingDateTime { get; set; } = DateTime.UtcNow.ToString("dd/MM/yyyy");
+    private string openingDateTime { get; set; } = DateTime.UtcNow.ToString("dd/MM/yyyy");
+    private string closingDateTime { get; set; } = DateTime.UtcNow.ToString("dd/MM/yyyy");
     private List<Technology> tagsCreated { get; set; } = new List<Technology>();
-        
+
     CreateQuiz createQuiz = new();
     CreateQuiz createQuiz2 = new();
 
     private async Task CreateQuizAsync()
     {
-        createQuiz.Tags = tagsCreated.Select(t=>t.Name).ToArray();
+        createQuiz.Tags = tagsCreated.Select(t => t.Name).ToArray();
         await KwizApiHttpClient.CreateQuizAsync(createQuiz);
+        NavigationManager.NavigateTo("/", true);
     }
-
 }
