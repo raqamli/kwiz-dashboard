@@ -2,44 +2,50 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-body">
-                <form Model="@createQuiz2" method="post">
+                <form Model="@createQuiz2" method="POST">
                     <div class="mb-3">
                         <label for="title" class="form-label">Title</label>
-                        <input @bind-value="createQuiz.Title" type="title" class="form-control" id="title" aria-describedby="title">
+                        <input @bind-value="createQuiz.Title" type="title" class="form-control" id="title"
+                            aria-describedby="title">
                     </div>
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
-                        <textarea @bind="createQuiz.Description" class="form-control" id="description" rows="3"></textarea>
+                        <textarea @bind="createQuiz.Description" class="form-control" id="description"
+                            rows="3"></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="date" class="form-label">OpeningDateTime</label>
-                        <input @bind-value="createQuiz.OpeningDateTime" type="date" class="form-control" id="openingDateTime">
+                        <input type="date" @Bind="createquiz.OpeningDateTime" @Bind:format="dd-MM-yyyy"
+                            class="form-control" />
                     </div>
                     <div class="mb-3">
                         <label for="date" class="form-label">ClosingDateTime</label>
-                        <input @bind-value="createQuiz.ClosingDateTime" type="date" class="form-control" id="closingDateTime">
+                        <input type="date" @Bind="createquiz.ClosingDateTime" @Bind:format="dd-MM-yyyy"
+                            class="form-control" />
                     </div>
                     <div class="mb-3">
-                        <label for="disabledSelect" class="form-label">IsPublic</label>
-                        <select @bind="createQuiz.IsPublic" id="disabledSelect" class="form-select">
-                            <option>True</option>
-                            <option>False</option>
+                        <label class="form-label">IsPublic</label>
+                        <select value.bind="@createQuiz.IsPublic" class="form-select">
+                            <option value="true">True</option>
+                            <option value="false">False</option>
                         </select>
                     </div>
                     <div class="mb-3">
                         <label for="code" class="form-label">Code</label>
                         <textarea @bind="createQuiz.Code" type="code" class="form-control" id="code"></textarea>
                     </div>
-                    <button @onclick="(async () => await CreateQuizAsync())" type="submit" class="btn btn-primary" style="float: right;">Submit</button>
+                    <button @onclick="(async () => await CreateQuizAsync())" type="submit" class="btn btn-primary"
+                        style="float: right;">Submit</button>
                 </form>
                 <button class="btn btn-primary" @onclick="OpenModal">Tags</button>
-                <TagsComponent Visible="@modalVisible" VisibleChanged="HandleModalVisibility" />
+                <TagsComponent Visible="@modalVisible" VisibleChanged="HandleModalVisibility" SelectedTechnologies="tagsCreated" />
             </div>
         </div>
     </div>
 </div>
 @code {
     [Inject] IKwizApiHttpClient KwizApiHttpClient { get; set; }
+
     private bool modalVisible = false;
     private void OpenModal()
     {
@@ -51,20 +57,17 @@
         modalVisible = isVisible;
         StateHasChanged();
     }
-
+    private string OpeningDateTime { get; set; } = DateTime.UtcNow.ToString("dd/MM/yyyy");
+    private string ClosingDateTime { get; set; } = DateTime.UtcNow.ToString("dd/MM/yyyy");
+    private List<Technology> tagsCreated { get; set; } = new List<Technology>();
+        
     CreateQuiz createQuiz = new();
     CreateQuiz createQuiz2 = new();
 
-
     private async Task CreateQuizAsync()
     {
-        createQuiz2.Title = "Title";
-        createQuiz2.Description = "Title";
-        createQuiz2.OpeningDateTime = DateTime.UtcNow;
-        createQuiz2.ClosingDateTime = DateTime.UtcNow;
-        createQuiz2.IsPublic = true;
-        createQuiz2.Code = "code";
-        await KwizApiHttpClient.CreateQuizAsync(createQuiz2);
+        createQuiz.Tags = tagsCreated.Select(t=>t.Name).ToArray();
+        await KwizApiHttpClient.CreateQuizAsync(createQuiz);
     }
 
 }

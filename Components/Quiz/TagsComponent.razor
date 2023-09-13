@@ -1,7 +1,9 @@
+@using System.Text.Json;
+
 @if (Visible)
 {
     <div class="modal fade show" style="display: block;">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Choose Interests</h5>
@@ -10,45 +12,30 @@
                     </button>
                 </div>
                 <div class="modal-body">
+
                     <p>Select your programming interests:</p>
 
-                    <!-- Programming Languages -->
-                    <p class="fw-semibold mb-2 mt-4 lead fw-semibold">Programming Languages</p>
-                    <div class="col">
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">C#</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Java</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">JavaScript</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Python</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">PHP</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Ruby</span>
-                    </div>
-
-                    <!-- Frameworks -->
-                    <p class="fw-semibold mb-2 mt-4 lead fw-semibold">Frameworks</p>
-                    <div class="col">
-                        <span class="badge rounded-pill bg-success p-2 m-1">ASP.NET</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Spring Boot</span>
-                        <span class="badge rounded-pill bg-success p-2 m-1">React</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Django</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Laravel</span>
-                        <span class="badge rounded-pill bg-success p-2 m-1">Ruby on Rails</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Angular</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Vue.js</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Express.js</span>
-                        <span class="badge rounded-pill bg-success p-2 m-1">Flask</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Symfony</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">ASP.NET Core</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Play Framework</span>
-                        <span class="badge rounded-pill bg-success p-2 m-1">Ember.js</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">RubyMotion</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Meteor</span>
-                        <span class="badge rounded-pill bg-success p-2 m-1">CakePHP</span>
-                        <span class="badge rounded-pill bg-secondary p-2 m-1">Sinatra</span>
-                        <span class="badge rounded-pill bg-success p-2 m-1">Sails.js</span>
-                    </div>
+                    @{
+                        var categories = Technologies.Where(t=>t.Type.Contains("Programming Language")).GroupBy(t => t.Type);
+                        foreach(var category in categories)
+                        {
+                            <p class="fw-semibold mb-2 mt-4 lead fw-semibold">@category.Key</p>
+                            
+                            <div class="col">
+                                @foreach(var item in category)
+                                {
+                                    <button class="btn btn-secondary m-1"
+                                            @onclick="() => ToggleSelection(item)"
+                                            style="cursor: pointer; background-color: @(SelectedTechnologies.Contains(item) ? "green" : "")">
+                                        @item.Name
+                                    </button>
+                                }
+                            </div>
+                        }
+                    }
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" @onclick="SaveInterests">Save</button>
+                    <button type="button" class="btn btn-primary @IsSaveDisabled" @onclick="SaveInterestsAsync">Save</button>
                     <button type="button" class="btn btn-secondary" @onclick="CloseModal">Close</button>
                 </div>
             </div>
@@ -56,19 +43,43 @@
     </div>
 }
 
-
 @code {
-    [Parameter] public bool Visible { get; set; } = true;
+    [Parameter] public bool Visible { get; set; } = false;
     [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
+    [Inject] IKwizApiHttpClient KwizApiHttpClient { get; set; }
+
+    private IEnumerable<Technology> Technologies { get; set; } = Enumerable.Empty<Technology>();
+    [Parameter] public List<Technology> SelectedTechnologies { get; set; } = new List<Technology>();
+    private string IsSaveDisabled = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Technologies = await KwizApiHttpClient.GetTechnologiesAsync();
+    }
+
+    private void ToggleSelection(Technology tech)
+    {
+        if(SelectedTechnologies.Contains(tech))
+            SelectedTechnologies.Remove(tech);
+        else
+            SelectedTechnologies.Add(tech);
+
+        if(SelectedTechnologies.Any())
+            IsSaveDisabled = string.Empty;
+        else
+            IsSaveDisabled = "disabled";
+    }
 
     private void CloseModal()
     {
         Visible = false;
         VisibleChanged.InvokeAsync(Visible);
     }
-
-    private void SaveInterests()
+    private void SaveInterestsAsync()
     {
+        IsSaveDisabled = "disabled";
+        @* await KwizApiHttpClient.SubmitUserInterestsAsync(SelectedTechnologies.Select(t => t.Id)); *@
         CloseModal();
+        IsSaveDisabled = string.Empty;
     }
 }
