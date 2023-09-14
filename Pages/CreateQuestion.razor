@@ -1,0 +1,45 @@
+@page "/createquestion/{quizTitle}"
+@inject IModalService Modal
+<div class="container-fluid">
+    <div class="p-3">
+        <button @onclick="@(() => Modal.Show<CreateQuestionComponent>("My Movies"))" class="btn btn-primary">Question yarating</button>
+    </div>
+    @{
+        foreach (var question in Questions.Items)
+        {
+            <div class="card">
+                <div class="card-body">
+                    <a href="">
+                        <h3 class="card-title fw-semibold mb-4">@question.Content</h3>
+                    </a>
+                    
+                    <div class="d-flex">
+                        <div style="width: 15px; height: 15px; background-color: green; margin-top: 10px; border-radius: 50%;">
+                        </div>
+                        @{
+                            foreach(var tag in question.Tags)
+                            {
+                                <p class="p-2" style="margin-bottom: 0; margin-block-start: 0; margin-block-end: 0;">@tag  </p>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    [Parameter] public string quizTitle { get; set; }
+    [Inject] IKwizApiHttpClient KwizApiHttpClient { get; set; }
+    [Parameter] public Guid QuizId { get; set; }
+    private GetQuiz Quiz { get; set; }
+    private GetQuestion Questions { get; set; } = null;
+    protected override async Task OnInitializedAsync()
+    {
+        Quiz = await KwizApiHttpClient.GetQuizTitleAsync(quizTitle, 0, 1);
+        var quizId = Quiz.Items.FirstOrDefault().Id;
+        QuizId = quizId;
+        Questions = await KwizApiHttpClient.GetQuestionsAsync(quizId, 0, 10);
+    }
+}

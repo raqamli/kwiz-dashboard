@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Kwiz.Dashboard;
 using Kwiz.Dashboard.Services;
 using Blazored.Modal;
+using Kwiz.Dashboard.Pages;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

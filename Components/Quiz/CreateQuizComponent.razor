@@ -84,6 +84,6 @@
 
         createQuiz.Tags = tagsCreated.Select(t => t.Name).ToArray();
         await KwizApiHttpClient.CreateQuizAsync(createQuiz);
-        NavigationManager.NavigateTo("/", true);
+        NavigationManager.NavigateTo($"/createquestion{createQuiz.Title}", true);
     }
 }
