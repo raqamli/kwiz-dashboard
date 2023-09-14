@@ -15,17 +15,15 @@
                     </div>
                     <div class="mb-3">
                         <label for="date" class="form-label">OpeningDateTime</label>
-                        <input type="date" @Bind="createquiz.OpeningDateTime" @Bind:format="dd-MM-yyyy"
-                            class="form-control" />
+                        <input type="date" @bind="OpeningDateTime" @bind:format="yyyy-MM-dd" class="form-control" />
                     </div>
                     <div class="mb-3">
                         <label for="date" class="form-label">ClosingDateTime</label>
-                        <input type="date" @Bind="createquiz.ClosingDateTime" @Bind:format="dd-MM-yyyy"
-                            class="form-control" />
+                        <input type="date" @bind="ClosingDateTime" @bind:format="yyyy-MM-dd" class="form-control" />
                     </div>
                     <div class="mb-3">
                         <label class="form-label">IsPublic</label>
-                        <select value.bind="@createQuiz.IsPublic" class="form-select">
+                        <select @bind="@IsPublic" class="form-select">
                             <option value="select">Select</option>
                             <option value="true">True</option>
                             <option value="false">False</option>
@@ -60,15 +58,30 @@
         modalVisible = isVisible;
         StateHasChanged();
     }
-    private string openingDateTime { get; set; } = DateTime.UtcNow.ToString("dd/MM/yyyy");
-    private string closingDateTime { get; set; } = DateTime.UtcNow.ToString("dd/MM/yyyy");
+    private DateTime OpeningDateTime { get; set; } = DateTime.Now;
+    private DateTime ClosingDateTime { get; set; } = DateTime.Now;
+
     private List<Technology> tagsCreated { get; set; } = new List<Technology>();
 
     CreateQuiz createQuiz = new();
     CreateQuiz createQuiz2 = new();
 
+    private string IsPublic { get; set; }
+
     private async Task CreateQuizAsync()
     {
+        if(IsPublic == "true")
+        {
+            createQuiz.IsPublic = true;   
+        }
+        else
+        {
+            createQuiz.IsPublic = false;
+        }
+
+        createQuiz.OpeningDateTime = OpeningDateTime.ToUniversalTime();
+        createQuiz.ClosingDateTime = ClosingDateTime.ToUniversalTime();
+
         createQuiz.Tags = tagsCreated.Select(t => t.Name).ToArray();
         await KwizApiHttpClient.CreateQuizAsync(createQuiz);
         NavigationManager.NavigateTo("/", true);
