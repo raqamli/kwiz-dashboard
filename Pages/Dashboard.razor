@@ -1,0 +1,43 @@
+@page "/dashboard"
+<div class="container-fluid">
+    @{
+        var quizzes = Quizzes;
+        foreach (var quiz in quizzes.Items)
+        {
+            <div class="card">
+                <div class="card-body">
+                    <a  @onclick="(async () => await OnClick(quiz.Title))">
+                        <h3 class="card-title fw-semibold mb-4">@quiz.Title</h3>
+                    </a>
+                    <p class="mb-0">@quiz.Description</p>
+
+                    <div class="d-flex">
+                        <div style="width: 15px; height: 15px; background-color: green; margin-top: 10px; border-radius: 50%;">
+                        </div>
+                        @{
+                            foreach(var tag in quiz.Tags)
+                            {
+                                <p class="p-2" style="margin-bottom: 0; margin-block-start: 0; margin-block-end: 0;">@tag  </p>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    [Inject] IKwizApiHttpClient KwizApiHttpClient { get; set; }
+    [Inject] NavigationManager NavigationManager { get; set; }
+    private GetQuiz Quizzes { get; set; } = null;
+    protected override async Task OnInitializedAsync()
+    {
+        Quizzes = await KwizApiHttpClient.GetQuizzesAsync(0, 10);
+    }
+
+    private async Task OnClick(string title)
+    {
+        NavigationManager.NavigateTo($"createquestion/{title}");
+    }
+}

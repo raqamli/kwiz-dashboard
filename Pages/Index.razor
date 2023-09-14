@@ -9,13 +9,15 @@
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
+@inject IModalService modal
+
 <PageTitle>Index</PageTitle>
 
 <h1>BlazorWASM Keycloak Authentication</h1>
 
 This application demonstrates how to integrate with Keycloak from BlazorWASM application.
 
-@if (claims.Count() > 0)
+@* @if (claims.Count() > 0)
 {
     <h2>User Claims:</h2>
     <ul>
@@ -24,7 +26,7 @@ This application demonstrates how to integrate with Keycloak from BlazorWASM app
             <li>@claim.Type: @claim.Value</li>
         }
     </ul>
-}
+} *@
 
 @if(Interests is null)
 {
@@ -32,7 +34,7 @@ This application demonstrates how to integrate with Keycloak from BlazorWASM app
 }
 else
 {
-    <h1>CHecking...</h1>
+    @* <Dashboard/> *@
 }
 
 @code {

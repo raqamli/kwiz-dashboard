@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Kwiz.Dashboard;
 using Kwiz.Dashboard.Services;
+using Blazored.Modal;
+using Kwiz.Dashboard.Pages;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -24,5 +26,7 @@ builder.Services.AddOidcAuthentication(options =>
     options.UserOptions.RoleClaim = keycloakSection.GetValue<string>("RoleClaim");
     options.UserOptions.ScopeClaim = keycloakSection.GetValue<string>("ScopeCliam");
 });
+
+builder.Services.AddBlazoredModal();
 
 await builder.Build().RunAsync();

@@ -69,4 +69,55 @@ public class KwizApiHttpClient : IKwizApiHttpClient
         var response = await client.PostAsJsonAsync("api/v1/Userinfo/interests", interestedTechnologyIds);
         response.EnsureSuccessStatusCode();
     }
+
+    public async Task CreateQuizAsync(CreateQuiz quiz)
+    {
+        var response = await client.PostAsJsonAsync("api/v1/Quizes", quiz);
+        await response.Content.ReadFromJsonAsync<CreateQuiz>();
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async ValueTask<GetQuiz> GetQuizzesAsync(int pageIndex = 0, int pageSize = 5)
+    {
+        var response = await client.GetAsync($"api/v1/Quizes?offset={pageIndex}&limit={pageSize}");
+
+        response.EnsureSuccessStatusCode();
+
+        var content = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<GetQuiz>(content);
+    }
+
+    public async ValueTask<GetQuestion> GetQuestionsAsync(Guid quizId, int pageIndex, int pageSize)
+    {
+        var response = await client.GetAsync($"api/v1/Quizes/{quizId}/questions?offset={pageIndex}&limit={pageSize}");
+
+        response.EnsureSuccessStatusCode();
+
+        var content = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<GetQuestion>(content);
+    }
+
+    public async ValueTask<GetQuiz> GetQuizTitleAsync(string title, int pageIndex = 0, int pageSize = 1)
+    {
+        var response = await client.GetAsync($"api/v1/Quizes?search={title}&offset={pageIndex}&limit={pageSize}");
+
+        response.EnsureSuccessStatusCode();
+
+        var content = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<GetQuiz>(content);
+    }
+
+    public async Task CreateQuestionAsync(Guid quizId, CreateQuestion question)
+    {
+        var response = await client.PostAsJsonAsync($"api/v1/Quizes/{quizId}/question", question);
+        await response.Content.ReadFromJsonAsync<CreateQuestion>();
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task CreateOptionsAsync(Guid questionId, IEnumerable<CreateOptions> options)
+    {
+        var response = await client.PostAsJsonAsync($"api/v1/Questions/{questionId}/questionOptions", options);
+        await response.Content.ReadFromJsonAsync<CreateOptions>();
+        response.EnsureSuccessStatusCode();
+    }
 }

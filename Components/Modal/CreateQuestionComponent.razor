@@ -1,0 +1,102 @@
+<div class="modal fade show" style="display: block; left: -150px;">
+    <div class="modal-dialog">
+        <div class="modal-content" style="width: 1000px;">
+            <div class="modal-header">
+                <div class="container-fluid">
+                    <div class="card">
+                        <div class="card-body">
+                            <form>
+                                <div class="mb-3">
+                                    <label for="content" class="form-label">Content</label>
+                                    <textarea @bind="Question.Content" class="form-control" id="content" aria-describedby="title"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="timeseconds" class="form-label">TimeSeconds</label>
+                                    <input @bind-value="Question.TimeLimitSeconds" type="number" class="form-control" id="timeseconds">
+                                </div>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label for="option-a" class="form-label">Answer A</label>
+                                            <input type="text" class="form-control" id="option-a">
+                                            <div class="mb-3" style="margin-top: 10px;">
+                                                <label for="explanation">Explanation</label>
+                                                <input type="text" class="form-control" id="explanation">
+
+                                                <div class="mb-3 d-flex" style="margin-top: 10px">
+                                                    <div class="me-3">
+                                                        <label class="me-2" for="iscorrect">Is Correct</label>
+                                                        <input class="me-2" type="checkbox" id="iscorrect">
+                                                    </div>
+                                                    <div class="me-3">
+                                                        <label class="me-2" for="isrequired">Is Required</label>
+                                                        <input class="me-2" type="checkbox" id="isrequired">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="option-b" class="form-label">Answer B</label>
+                                            <input type="text" class="form-control" id="option-b">
+                                            <div class="mb-3" style="margin-top: 10px;">
+                                                <label for="explanation">Explanation</label>
+                                                <input type="text" class="form-control" id="explanation">
+
+                                                <div class="mb-3 d-flex" style="margin-top: 10px">
+                                                    <div class="me-3">
+                                                        <label class="me-2" for="iscorrect">Is Correct</label>
+                                                        <input class="me-2" type="checkbox" id="iscorrect">
+                                                    </div>
+                                                    <div class="me-3">
+                                                        <label class="me-2" for="isrequired">Is Required</label>
+                                                        <input class="me-2" type="checkbox" id="isrequired">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="option-c" class="form-label">Answer C</label>
+                                            <input type="text" class="form-control" id="option-c">
+                                            <div class="mb-3" style="margin-top: 10px;">
+                                                <label for="explanation">Explanation</label>
+                                                <input type="text" class="form-control" id="explanation">
+
+                                                <div class="mb-3 d-flex" style="margin-top: 10px">
+                                                    <div class="me-3">
+                                                        <label class="me-2" for="iscorrect">Is Correct</label>
+                                                        <input class="me-2" type="checkbox" id="iscorrect">
+                                                    </div>
+                                                    <div class="me-3">
+                                                        <label class="me-2" for="isrequired">Is Required</label>
+                                                        <input class="me-2" type="checkbox" id="isrequired">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button @onclick="(async () => await SaveQuetionAsync())" type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Inject] IKwizApiHttpClient KwizApiHttpClient { get; set; }
+    private Pages.CreateQuestion CreateQuestion { get; set; }
+    private Models.CreateQuestion Question { get; set; }
+    private IEnumerable<CreateOptions> Options { get; set; } = Enumerable.Empty<CreateOptions>();
+
+    private async Task SaveQuetionAsync()
+    {
+        Question.Tags = new string[] {};
+        await KwizApiHttpClient.CreateQuestionAsync(CreateQuestion.QuizId, Question);
+
+        
+    }
+}

@@ -1,0 +1,89 @@
+<div class="container-fluid">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body">
+                <form Model="@createQuiz2" method="POST">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input @bind-value="createQuiz.Title" type="title" class="form-control" id="title"
+                            aria-describedby="title">
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea @bind="createQuiz.Description" class="form-control" id="description"
+                            rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="date" class="form-label">OpeningDateTime</label>
+                        <input type="date" @bind="OpeningDateTime" @bind:format="yyyy-MM-dd" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="date" class="form-label">ClosingDateTime</label>
+                        <input type="date" @bind="ClosingDateTime" @bind:format="yyyy-MM-dd" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">IsPublic</label>
+                        <select @bind="@IsPublic" class="form-select">
+                            <option value="select">Select</option>
+                            <option value="true">True</option>
+                            <option value="false">False</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="code" class="form-label">Code</label>
+                        <textarea @bind="createQuiz.Code" type="code" class="form-control" id="code"></textarea>
+                    </div>
+                    <button @onclick="(async () => await CreateQuizAsync())" type="submit" class="btn btn-primary"
+                        style="float: right;">Submit</button>
+                </form>
+                <button class="btn btn-primary" @onclick="OpenModal">Tags</button>
+                <TagsComponent Visible="@modalVisible" VisibleChanged="HandleModalVisibility"
+                    SelectedTechnologies="tagsCreated" />
+            </div>
+        </div>
+    </div>
+</div>
+@code {
+    [Inject] NavigationManager NavigationManager { get; set; }
+    [Inject] IKwizApiHttpClient KwizApiHttpClient { get; set; }
+
+    private bool modalVisible = false;
+    private void OpenModal()
+    {
+        modalVisible = true;
+    }
+
+    private void HandleModalVisibility(bool isVisible)
+    {
+        modalVisible = isVisible;
+        StateHasChanged();
+    }
+    private DateTime OpeningDateTime { get; set; } = DateTime.Now;
+    private DateTime ClosingDateTime { get; set; } = DateTime.Now;
+
+    private List<Technology> tagsCreated { get; set; } = new List<Technology>();
+
+    CreateQuiz createQuiz = new();
+    CreateQuiz createQuiz2 = new();
+
+    private string IsPublic { get; set; }
+
+    private async Task CreateQuizAsync()
+    {
+        if(IsPublic == "true")
+        {
+            createQuiz.IsPublic = true;   
+        }
+        else
+        {
+            createQuiz.IsPublic = false;
+        }
+
+        createQuiz.OpeningDateTime = OpeningDateTime.ToUniversalTime();
+        createQuiz.ClosingDateTime = ClosingDateTime.ToUniversalTime();
+
+        createQuiz.Tags = tagsCreated.Select(t => t.Name).ToArray();
+        await KwizApiHttpClient.CreateQuizAsync(createQuiz);
+        NavigationManager.NavigateTo($"/createquestion{createQuiz.Title}", true);
+    }
+}
