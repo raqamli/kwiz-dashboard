@@ -92,10 +92,12 @@
     [Inject] DataService DataService { get; set; }
     private Pages.CreateQuestion CreateQuestion { get; set; }
     private CreateQuestion question = new();
-    private List<CreateOptions> Options { get; set; }
+    private List<CreateOptions> Options { get; set; } = new List<CreateOptions>();
     private CreateOptions optionA = new();
     private CreateOptions optionB = new();
     private CreateOptions optionC = new();
+
+    private Guid lastQuestionId;
 
     private async Task SaveQuetionAsync()
     {
@@ -104,6 +106,7 @@
         Options.Add(optionC);
         question.Tags = new string[] {"c#"};
         await KwizApiHttpClient.CreateQuestionAsync(DataService.QuizId, question);
-        
+        lastQuestionId = new Guid("04b2dde3-2fa8-47c3-ac46-eecd21355701");
+        await KwizApiHttpClient.CreateOptionsAsync(lastQuestionId, Options);
     }
 }

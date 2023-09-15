@@ -15,4 +15,5 @@ public interface IKwizApiHttpClient
     ValueTask<GetQuestion> GetQuestionsAsync(Guid quizId, int pageIndex, int pageSize);
     Task CreateQuestionAsync(Guid quizId, CreateQuestion question);
     Task CreateOptionsAsync(Guid questionId, IEnumerable<CreateOptions> options);
+    ValueTask<string> GetQuestionsLastIdAsync();
 }

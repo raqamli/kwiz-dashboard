@@ -129,4 +129,13 @@ public class KwizApiHttpClient : IKwizApiHttpClient
         await response.Content.ReadFromJsonAsync<CreateOptions>();
         response.EnsureSuccessStatusCode();
     }
+
+    public async ValueTask<string> GetQuestionsLastIdAsync()
+    {
+        var response = await client.GetAsync("api/v1/Quizes/lastId");
+        response.EnsureSuccessStatusCode();
+        
+        var content = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<string>(content);
+    }
 }
