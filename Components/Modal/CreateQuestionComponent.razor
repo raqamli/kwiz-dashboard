@@ -5,78 +5,79 @@
                 <div class="container-fluid">
                     <div class="card">
                         <div class="card-body">
-                            <form>
+                            <form Model="@question" method="POST">
                                 <div class="mb-3">
                                     <label for="content" class="form-label">Content</label>
-                                    <textarea @bind="Question.Content" class="form-control" id="content" aria-describedby="title"></textarea>
+                                    <textarea @bind="question.Content" class="form-control" id="content" aria-describedby="title"></textarea>
                                 </div>
                                 <div class="mb-3">
                                     <label for="timeseconds" class="form-label">TimeSeconds</label>
-                                    <input @bind-value="Question.TimeLimitSeconds" type="number" class="form-control" id="timeseconds">
+                                    <input @bind-value="question.TimeLimitSeconds" type="number" class="form-control" id="timeseconds">
                                 </div>
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="mb-3">
                                             <label for="option-a" class="form-label">Answer A</label>
-                                            <input type="text" class="form-control" id="option-a">
+                                            <input @bind-value="optionA.Content" type="text" class="form-control" id="option-a">
                                             <div class="mb-3" style="margin-top: 10px;">
                                                 <label for="explanation">Explanation</label>
-                                                <input type="text" class="form-control" id="explanation">
+                                                <input @bind-value="optionA.Explanation" type="text" class="form-control" id="explanation">
 
                                                 <div class="mb-3 d-flex" style="margin-top: 10px">
                                                     <div class="me-3">
                                                         <label class="me-2" for="iscorrect">Is Correct</label>
-                                                        <input class="me-2" type="checkbox" id="iscorrect">
+                                                        <input @bind-value="optionA.IsCorrect" class="me-2" type="checkbox" id="iscorrect">
                                                     </div>
                                                     <div class="me-3">
                                                         <label class="me-2" for="isrequired">Is Required</label>
-                                                        <input class="me-2" type="checkbox" id="isrequired">
+                                                        <input @bind-value="optionA.IsRequired" class="me-2" type="checkbox" id="isrequired">
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="mb-3">
                                             <label for="option-b" class="form-label">Answer B</label>
-                                            <input type="text" class="form-control" id="option-b">
+                                            <input @bind-value="optionB.Content" type="text" class="form-control" id="option-b">
                                             <div class="mb-3" style="margin-top: 10px;">
                                                 <label for="explanation">Explanation</label>
-                                                <input type="text" class="form-control" id="explanation">
+                                                <input @bind-value="optionB.Explanation" type="text" class="form-control" id="explanation">
 
                                                 <div class="mb-3 d-flex" style="margin-top: 10px">
                                                     <div class="me-3">
                                                         <label class="me-2" for="iscorrect">Is Correct</label>
-                                                        <input class="me-2" type="checkbox" id="iscorrect">
+                                                        <input @bind-value="optionB.IsCorrect" class="me-2" type="checkbox" id="iscorrect">
                                                     </div>
                                                     <div class="me-3">
                                                         <label class="me-2" for="isrequired">Is Required</label>
-                                                        <input class="me-2" type="checkbox" id="isrequired">
+                                                        <input @bind-value="optionB.IsRequired" class="me-2" type="checkbox" id="isrequired">
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="mb-3">
                                             <label for="option-c" class="form-label">Answer C</label>
-                                            <input type="text" class="form-control" id="option-c">
+                                            <input @bind-value="optionC.Content" type="text" class="form-control" id="option-c">
                                             <div class="mb-3" style="margin-top: 10px;">
                                                 <label for="explanation">Explanation</label>
-                                                <input type="text" class="form-control" id="explanation">
+                                                <input @bind-value="optionC.Explanation" type="text" class="form-control" id="explanation">
 
                                                 <div class="mb-3 d-flex" style="margin-top: 10px">
                                                     <div class="me-3">
                                                         <label class="me-2" for="iscorrect">Is Correct</label>
-                                                        <input class="me-2" type="checkbox" id="iscorrect">
+                                                        <input @bind-value="optionC.IsCorrect" class="me-2" type="checkbox" id="iscorrect">
                                                     </div>
                                                     <div class="me-3">
                                                         <label class="me-2" for="isrequired">Is Required</label>
-                                                        <input class="me-2" type="checkbox" id="isrequired">
+                                                        <input @bind-value="optionC.IsRequired" class="me-2" type="checkbox" id="isrequired">
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
-                                <button @onclick="(async () => await SaveQuetionAsync())" type="submit" class="btn btn-primary">Submit</button>
+                                
+                                <button type="submit" class="btn btn-primary" @onclick="(async () => await SaveQuetionAsync())">Submit</button>
+                                
                             </form>
                         </div>
                     </div>
@@ -88,15 +89,21 @@
 
 @code {
     [Inject] IKwizApiHttpClient KwizApiHttpClient { get; set; }
+    [Inject] DataService DataService { get; set; }
     private Pages.CreateQuestion CreateQuestion { get; set; }
-    private Models.CreateQuestion Question { get; set; }
-    private IEnumerable<CreateOptions> Options { get; set; } = Enumerable.Empty<CreateOptions>();
+    private CreateQuestion question = new();
+    private List<CreateOptions> Options { get; set; }
+    private CreateOptions optionA = new();
+    private CreateOptions optionB = new();
+    private CreateOptions optionC = new();
 
     private async Task SaveQuetionAsync()
     {
-        Question.Tags = new string[] {};
-        await KwizApiHttpClient.CreateQuestionAsync(CreateQuestion.QuizId, Question);
-
+        Options.Add(optionA);
+        Options.Add(optionB);
+        Options.Add(optionC);
+        question.Tags = new string[] {"c#"};
+        await KwizApiHttpClient.CreateQuestionAsync(DataService.QuizId, question);
         
     }
 }

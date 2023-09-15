@@ -29,4 +29,6 @@ builder.Services.AddOidcAuthentication(options =>
 
 builder.Services.AddBlazoredModal();
 
+builder.Services.AddScoped<DataService>();
+
 await builder.Build().RunAsync();

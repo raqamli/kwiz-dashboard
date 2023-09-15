@@ -9,7 +9,15 @@ namespace Kwiz.Dashboard.Services;
 public class KwizApiHttpClient : IKwizApiHttpClient
 {
     private readonly HttpClient client;
-    public KwizApiHttpClient(HttpClient client) => this.client = client;
+    private readonly DataService dataService;
+
+    public KwizApiHttpClient(
+        HttpClient client,
+        DataService dataService)
+    {
+        this.client = client;
+        this.dataService = dataService;
+    }
 
     public async ValueTask<IEnumerable<Technology>> GetTechnologiesAsync()
     {
@@ -111,6 +119,7 @@ public class KwizApiHttpClient : IKwizApiHttpClient
     {
         var response = await client.PostAsJsonAsync($"api/v1/Quizes/{quizId}/question", question);
         await response.Content.ReadFromJsonAsync<CreateQuestion>();
+        
         response.EnsureSuccessStatusCode();
     }
 

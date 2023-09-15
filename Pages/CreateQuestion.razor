@@ -2,7 +2,7 @@
 @inject IModalService Modal
 <div class="container-fluid">
     <div class="p-3">
-        <button @onclick="@(() => Modal.Show<CreateQuestionComponent>("My Movies"))" class="btn btn-primary">Question yarating</button>
+        <button @onclick="@(() => Modal.Show<CreateQuestionComponent>("Create Question"))" class="btn btn-primary">Question yarating</button>
     </div>
     @{
         foreach (var question in Questions.Items)
@@ -32,6 +32,7 @@
 @code {
     [Parameter] public string quizTitle { get; set; }
     [Inject] IKwizApiHttpClient KwizApiHttpClient { get; set; }
+    [Inject] DataService DataService {get; set; }
     [Parameter] public Guid QuizId { get; set; }
     private GetQuiz Quiz { get; set; }
     private GetQuestion Questions { get; set; } = null;
@@ -40,6 +41,7 @@
         Quiz = await KwizApiHttpClient.GetQuizTitleAsync(quizTitle, 0, 1);
         var quizId = Quiz.Items.FirstOrDefault().Id;
         QuizId = quizId;
+        DataService.QuizId = new Guid(quizId.ToString().ToLower());
         Questions = await KwizApiHttpClient.GetQuestionsAsync(quizId, 0, 10);
     }
 }
